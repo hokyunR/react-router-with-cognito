@@ -1,0 +1,7 @@
+packages:
+  - web
+  - infra
+
+onlyBuiltDependencies:
+  - '@tailwindcss/oxide'
+  - esbuild
