@@ -2,9 +2,13 @@ import "react-router";
 import { createRequestHandler } from "@react-router/express";
 import express from "express";
 
+import { authenticator } from "~/.server/authenticator.server";
+
+import "./schedules/strategy-manager";
+
 declare module "react-router" {
   interface AppLoadContext {
-    VALUE_FROM_EXPRESS: string;
+    authenticator: typeof authenticator;
   }
 }
 
@@ -15,8 +19,8 @@ app.use(
     build: () => import("virtual:react-router/server-build"),
     getLoadContext() {
       return {
-        VALUE_FROM_EXPRESS: "Hello from Express",
+        authenticator,
       };
     },
-  }),
+  })
 );

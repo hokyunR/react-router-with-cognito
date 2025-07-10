@@ -1,0 +1,38 @@
+diff --git a/build/index.d.ts b/build/index.d.ts
+index 196995e31038cacbe04100efbad3eddee9917828..49481bd3c34aeb50eab96857bb54e934a70acc20 100644
+--- a/build/index.d.ts
++++ b/build/index.d.ts
+@@ -9,12 +9,12 @@ import type { Strategy } from "./strategy.js";
+  * @example
+  * let auth = new Authenticator();
+  */
+-export declare class Authenticator<User = unknown> {
++export declare class Authenticator<User = unknown, S extends Strategy<User, never> = Strategy<User, never>> {
+     /**
+      * A map of the configured strategies, the key is the name of the strategy
+-     * @private
++     * @readonly
+      */
+-    private strategies;
++    readonly strategies: Map<string, S>;
+     /**
+      * Call this method with the Strategy, the optional name allows you to setup
+      * the same strategy multiple times with different names.
+@@ -23,7 +23,7 @@ export declare class Authenticator<User = unknown> {
+      * auth.use(new SomeStrategy((user) => Promise.resolve(user)));
+      * auth.use(new SomeStrategy((user) => Promise.resolve(user)), "another");
+      */
+-    use(strategy: Strategy<User, never>, name?: string): Authenticator<User>;
++    use(strategy: S, name?: string): Authenticator<User, S>;
+     /**
+      * Call this method with the name of the strategy you want to remove.
+      * It returns the Authenticator instance for concatenation.
+@@ -37,7 +37,7 @@ export declare class Authenticator<User = unknown> {
+      * @param name
+      * @returns
+      */
+-    get<S extends Strategy<User, never>>(name: string): S | null;
++    get<S>(name: string): S | null;
+     /**
+      * Call this to authenticate a request using some strategy. You pass the name
+      * of the strategy you want to use and the request to authenticate.

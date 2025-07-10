@@ -1,14 +1,22 @@
 import { redirect } from "react-router";
-import { authenticator, STRATEGY_NAME } from "~/.server/auth.server";
+import { type Strategy } from "~/.server/authenticator.server";
 import { sessionStorage } from "~/.server/session.server";
 import { requireAnonymous } from "~/.server/utils.server";
 
 import type { Route } from "./+types/callback";
 
-export async function loader({ request }: Route.LoaderArgs) {
+export async function loader({ request, params, context }: Route.LoaderArgs) {
   await requireAnonymous(request);
 
-  const tokens = await authenticator.authenticate(STRATEGY_NAME, request);
+  const { tenant } = params;
+
+  const strategy = context.authenticator.get<Strategy>(tenant);
+
+  if (!strategy) {
+    return redirect("/");
+  }
+
+  const tokens = await strategy.authenticate(request);
 
   const session = await sessionStorage.getSession(
     request.headers.get("cookie")

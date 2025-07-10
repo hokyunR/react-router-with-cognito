@@ -6,6 +6,7 @@ export interface UserInfo {
   sub: string;
   email: string;
   username: string;
+  "custom:tenant_name": string;
 }
 
 export const requireAuthenticated = async (request: Request) => {

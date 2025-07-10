@@ -5,3 +5,6 @@ packages:
 onlyBuiltDependencies:
   - '@tailwindcss/oxide'
   - esbuild
+
+patchedDependencies:
+  remix-auth: patches/remix-auth.patch

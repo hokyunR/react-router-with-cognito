@@ -1,12 +1,16 @@
 import { href, redirect, redirectDocument } from "react-router";
 import { requireAuthenticated } from "~/.server/utils.server";
 import { sessionStorage } from "~/.server/session.server";
-import { strategy } from "~/.server/auth.server";
+import type { Strategy } from "~/.server/authenticator.server";
 
 import type { Route } from "./+types/logout";
 
-export async function action({ request }: Route.LoaderArgs) {
+export async function action({ request, params, context }: Route.LoaderArgs) {
   await requireAuthenticated(request);
+
+  const { tenant } = params;
+
+  const strategy = context.authenticator.get<Strategy>(tenant);
 
   try {
     const session = await sessionStorage.getSession(
@@ -15,7 +19,7 @@ export async function action({ request }: Route.LoaderArgs) {
     const refreshToken = session.get("refreshToken");
 
     if (refreshToken) {
-      await strategy.revokeToken(refreshToken);
+      await strategy?.revokeToken(refreshToken);
     }
   } catch (error) {
     console.error("Failed to revoke token:", error);

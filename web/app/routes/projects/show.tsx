@@ -1,9 +1,18 @@
-import { Link, Form } from "react-router";
+import { Link, Form, redirect } from "react-router";
 import { requireAuthenticated, getUserInfo } from "~/.server/utils.server";
 
 import type { Route } from "./+types/show";
+import type { Strategy } from "~/.server/authenticator.server";
 
-export async function loader({ params, request }: Route.LoaderArgs) {
+export async function loader({ params, request, context }: Route.LoaderArgs) {
+  const { tenant } = params;
+
+  const strategy = context.authenticator.get<Strategy>(tenant);
+
+  if (!strategy) {
+    return redirect("/");
+  }
+
   await requireAuthenticated(request);
 
   const userInfo = await getUserInfo(request);
@@ -11,11 +20,12 @@ export async function loader({ params, request }: Route.LoaderArgs) {
   return {
     projectId: params.projectId || "default",
     userInfo,
+    tenant,
   };
 }
 
 export default function Show({ loaderData }: Route.ComponentProps) {
-  const { projectId, userInfo } = loaderData;
+  const { projectId, userInfo, tenant } = loaderData;
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -31,7 +41,7 @@ export default function Show({ loaderData }: Route.ComponentProps) {
             </div>
             <div className="flex items-center space-x-4">
               <span className="text-sm text-gray-500">{userInfo?.email}</span>
-              <Form method="post" action="/logout">
+              <Form method="post" action={`/${tenant}/logout`}>
                 <button
                   type="submit"
                   className="bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700 transition-colors text-sm"

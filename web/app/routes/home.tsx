@@ -2,14 +2,16 @@ import { Link, Form } from "react-router";
 import type { Route } from "./+types/home";
 import { getUserInfo } from "~/.server/utils.server";
 
-export async function loader({ request }: Route.LoaderArgs) {
+export async function loader({ request, context }: Route.LoaderArgs) {
   const userInfo = await getUserInfo(request);
 
-  return { userInfo };
+  const tenants = Array.from(context.authenticator.strategies.keys());
+
+  return { userInfo, tenants };
 }
 
 export default function Home({ loaderData }: Route.ComponentProps) {
-  const { userInfo } = loaderData;
+  const { userInfo, tenants } = loaderData;
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -27,6 +29,9 @@ export default function Home({ loaderData }: Route.ComponentProps) {
                 </h2>
                 <div className="space-y-2 text-green-700">
                   <p>
+                    <strong>테넌트:</strong> {userInfo["custom:tenant_name"]}
+                  </p>
+                  <p>
                     <strong>이메일:</strong> {userInfo.email}
                   </p>
                   <p>
@@ -37,13 +42,16 @@ export default function Home({ loaderData }: Route.ComponentProps) {
 
               <div className="flex space-x-4">
                 <Link
-                  to="/projects/show"
+                  to={`/${userInfo["custom:tenant_name"]}/projects/show`}
                   className="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition-colors"
                 >
                   프로젝트 보기
                 </Link>
 
-                <Form method="post" action="/logout">
+                <Form
+                  method="post"
+                  action={`/${userInfo["custom:tenant_name"]}/logout`}
+                >
                   <button
                     type="submit"
                     className="bg-red-600 text-white px-6 py-2 rounded-lg hover:bg-red-700 transition-colors"
@@ -63,12 +71,17 @@ export default function Home({ loaderData }: Route.ComponentProps) {
                 <p className="text-blue-700 mb-4">
                   AWS Cognito를 통해 안전하게 로그인하고 프로젝트에 접근하세요.
                 </p>
-                <Link
-                  to="/login"
-                  className="inline-block bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition-colors"
-                >
-                  로그인
-                </Link>
+                <div className="flex space-x-4">
+                  {tenants.map((tenant) => (
+                    <Link
+                      key={tenant}
+                      to={`/${tenant}/login`}
+                      className="inline-block bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition-colors"
+                    >
+                      {tenant} 로그인
+                    </Link>
+                  ))}
+                </div>
               </div>
 
               <div className="bg-gray-50 border border-gray-200 rounded-lg p-6">
