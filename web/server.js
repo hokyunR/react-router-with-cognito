@@ -43,6 +43,10 @@ if (DEVELOPMENT) {
   app.use(await import(BUILD_PATH).then((mod) => mod.app));
 }
 
-app.listen(PORT, () => {
+const server = app.listen(PORT, () => {
   console.log(`Server is running on http://localhost:${PORT}`);
+});
+
+["SIGTERM", "SIGINT"].forEach((signal) => {
+  process.once(signal, () => server?.close(console.error));
 });
