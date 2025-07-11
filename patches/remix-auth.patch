@@ -1,5 +1,5 @@
 diff --git a/build/index.d.ts b/build/index.d.ts
-index 196995e31038cacbe04100efbad3eddee9917828..49481bd3c34aeb50eab96857bb54e934a70acc20 100644
+index 196995e31038cacbe04100efbad3eddee9917828..280cf489b5de7879fe41a1a5a6f6bb1545b1ad4a 100644
 --- a/build/index.d.ts
 +++ b/build/index.d.ts
 @@ -9,12 +9,12 @@ import type { Strategy } from "./strategy.js";
@@ -32,7 +32,7 @@ index 196995e31038cacbe04100efbad3eddee9917828..49481bd3c34aeb50eab96857bb54e934
       * @returns
       */
 -    get<S extends Strategy<User, never>>(name: string): S | null;
-+    get<S>(name: string): S | null;
++    get(name: string): S | null;
      /**
       * Call this to authenticate a request using some strategy. You pass the name
       * of the strategy you want to use and the request to authenticate.

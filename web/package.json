@@ -9,10 +9,13 @@
     "typecheck": "react-router typegen && tsc -b"
   },
   "dependencies": {
+    "@aws-sdk/client-dynamodb": "^3.844.0",
+    "@aws-sdk/lib-dynamodb": "^3.844.0",
     "@react-router/express": "^7.5.3",
     "@react-router/node": "^7.5.3",
     "compression": "^1.7.5",
     "cron": "^4.3.1",
+    "dynamodb-toolbox": "^2.6.4",
     "express": "^5.1.0",
     "isbot": "^5.1.27",
     "morgan": "^1.10.0",

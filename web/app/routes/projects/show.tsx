@@ -2,12 +2,11 @@ import { Link, Form, redirect } from "react-router";
 import { requireAuthenticated, getUserInfo } from "~/.server/utils.server";
 
 import type { Route } from "./+types/show";
-import type { Strategy } from "~/.server/authenticator.server";
 
 export async function loader({ params, request, context }: Route.LoaderArgs) {
   const { tenant } = params;
 
-  const strategy = context.authenticator.get<Strategy>(tenant);
+  const strategy = context.authenticator.get(tenant);
 
   if (!strategy) {
     return redirect("/");

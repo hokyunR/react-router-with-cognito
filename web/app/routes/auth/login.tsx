@@ -1,4 +1,3 @@
-import type { Strategy } from "~/.server/authenticator.server";
 import { requireAnonymous } from "~/.server/utils.server";
 
 import type { Route } from "./+types/login";
@@ -9,7 +8,7 @@ export async function loader({ request, params, context }: Route.LoaderArgs) {
 
   const { tenant } = params;
 
-  const strategy = context.authenticator.get<Strategy>(tenant);
+  const strategy = context.authenticator.get(tenant);
 
   if (!strategy) {
     return redirect("/");

@@ -1,5 +1,4 @@
 import { redirect } from "react-router";
-import { type Strategy } from "~/.server/authenticator.server";
 import { sessionStorage } from "~/.server/session.server";
 import { requireAnonymous } from "~/.server/utils.server";
 
@@ -10,7 +9,7 @@ export async function loader({ request, params, context }: Route.LoaderArgs) {
 
   const { tenant } = params;
 
-  const strategy = context.authenticator.get<Strategy>(tenant);
+  const strategy = context.authenticator.get(tenant);
 
   if (!strategy) {
     return redirect("/");

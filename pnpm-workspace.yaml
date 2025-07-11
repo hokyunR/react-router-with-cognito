@@ -3,8 +3,10 @@ packages:
   - infra
 
 onlyBuiltDependencies:
-  - '@tailwindcss/oxide'
+  - "@tailwindcss/oxide"
   - esbuild
 
 patchedDependencies:
   remix-auth: patches/remix-auth.patch
+
+injectWorkspacePackages: true

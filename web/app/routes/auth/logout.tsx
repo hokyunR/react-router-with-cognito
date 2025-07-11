@@ -1,7 +1,6 @@
 import { href, redirect, redirectDocument } from "react-router";
 import { requireAuthenticated } from "~/.server/utils.server";
 import { sessionStorage } from "~/.server/session.server";
-import type { Strategy } from "~/.server/authenticator.server";
 
 import type { Route } from "./+types/logout";
 
@@ -10,7 +9,7 @@ export async function action({ request, params, context }: Route.LoaderArgs) {
 
   const { tenant } = params;
 
-  const strategy = context.authenticator.get<Strategy>(tenant);
+  const strategy = context.authenticator.get(tenant);
 
   try {
     const session = await sessionStorage.getSession(
